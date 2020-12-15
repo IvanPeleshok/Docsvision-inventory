@@ -1,10 +1,10 @@
 import { composeWithDevTools } from "redux-devtools-extension"
 import { createStore, combineReducers, applyMiddleware } from "redux"
 import thunkMiddleware from "redux-thunk"
-import { appReducer } from "./app-reducer"
+import { databaseReducer } from "./database-reducer"
 
 export let rootReducer = combineReducers({
-  app: appReducer,
+  database: databaseReducer,
 })
 
 const devTools =

@@ -3,11 +3,15 @@ import { Switch } from "react-router"
 import "./App.scss"
 import { withSuspense } from "./hoc/withSuspense"
 import { dataBaseAPI } from "./api/api-database"
+import { getInventory, getPlaces } from "./redux/database-reducer"
+import { useDispatch } from "react-redux"
 
 const App = memo(() => {
+  const dispatch = useDispatch()
+
   useEffect(() => {
-    dataBaseAPI.getPlaces().then((response: any) => console.log(response))
-    dataBaseAPI.getInventory().then((response: any) => console.log(response))
+    dispatch(getPlaces())
+    dispatch(getInventory())
   }, [])
 
   return (

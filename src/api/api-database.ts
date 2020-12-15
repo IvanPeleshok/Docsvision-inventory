@@ -1,4 +1,5 @@
 import firebase from "../firebase/firebase"
+import { IPlace } from "../interface/database"
 import { AlertifyStatusEnum } from "../types/types"
 import { showAlert } from "../utils/showAlert"
 
