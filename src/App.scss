@@ -1,0 +1,49 @@
+@import url('./assets/scss/Reset.scss');
+
+@import url('./assets/fonts/Open\ Sans/stylesheet.css');
+@import url('./assets/scss/Colors.scss');
+@import url('./assets/scss/CommonStyle.scss');
+@import url('./assets/scss/Alertify.scss');
+@import url('./assets/scss/TransitionGroup.scss');
+
+@import './assets/scss/Colors.scss';
+
+body {
+	font-family: 'Open Sans';
+	box-sizing: border-box;
+}
+
+.app-content {
+	display: flex;
+
+	& .content {
+		position: relative;
+		width: 100%;
+		padding: 30px;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+	margin-left: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #1e1f2044;
+	border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	opacity: .5;
+}
