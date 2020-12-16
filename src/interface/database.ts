@@ -28,3 +28,9 @@ export interface IInventoryResponse extends IInventory {
     count: number
   }
 }
+
+export interface IHierarchy {
+  id: string
+  parts: Array<string> | null
+  name: string
+}

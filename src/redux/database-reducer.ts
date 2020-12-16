@@ -4,6 +4,7 @@ import {
   IInventory,
   IPlaceResponse,
   IInventoryResponse,
+  IHierarchy,
 } from "../interface/database"
 import { TInferActions, TBaseThunk } from "../types/redux"
 import { AlertifyStatusEnum } from "../types/types"
@@ -14,9 +15,9 @@ type TActions = TInferActions<typeof actions>
 type TThunk = TBaseThunk<TActions>
 
 let initialState = {
-  places: [] as Array<IPlace>,
-  inventory: [] as Array<IInventory>,
   hierarchy: [] as Array<any>,
+  inventory: [] as Array<IInventory>,
+  currentInventory: [] as Array<IInventory>,
 }
 
 export const databaseReducer = (
@@ -24,41 +25,20 @@ export const databaseReducer = (
   action: TActions
 ): TInitialState => {
   switch (action.type) {
-    case "DATABASE/SET_PLACES":
-      const places = action.payload
-
-      let hierarchy: Array<any> = []
-
-      // Building search
-      action.payload.forEach((place: IPlace) => {
-        if (place.id.indexOf("-") === -1) {
-          hierarchy.push({ id: place.id, parts: place.parts })
-        }
-      })
-      // Search for dependencies on parts
-      const hierarchyWithNodes = hierarchy.map((building: any) => {
-        const objNode = building.parts.map((part: string) => {
-          const node = places.find((place: IPlace) => place.id === part)
-          // Search for dependencies for rooms
-          const objRoom = node?.parts?.map((part: string) => {
-            const room = places.find((place: IPlace) => place.id === part)
-            return room
-          })
-          return { name: node?.name, id: node?.id, parts: objRoom }
-        })
-        return { id: building.id, parts: objNode }
-      })
-      // I tried to find the optimal algorithm, but I had to write my own (non-optimal)
-
+    case "DATABASE/SET_HEIRARCHY":
       return {
         ...state,
-        places,
-        hierarchy: hierarchyWithNodes,
+        hierarchy: action.payload,
       }
     case "DATABASE/SET_INVENTORY":
       return {
         ...state,
         inventory: action.payload,
+      }
+    case "DATABASE/SET_CURRENT_INVENORY":
+      return {
+        ...state,
+        currentInventory: action.payload,
       }
     default:
       return state
@@ -66,29 +46,56 @@ export const databaseReducer = (
 }
 
 export const actions = {
-  setPlaces: (palces: Array<IPlace>) =>
+  setHierarchy: (hierarchy: Array<any>) =>
     ({
-      type: "DATABASE/SET_PLACES",
-      payload: palces,
+      type: "DATABASE/SET_HEIRARCHY",
+      payload: hierarchy,
     } as const),
   setInventory: (inventory: Array<IInventory>) =>
     ({
       type: "DATABASE/SET_INVENTORY",
       payload: inventory,
     } as const),
+  setCurrentInvenory: (currentInventory: Array<IInventory>) =>
+    ({
+      type: "DATABASE/SET_CURRENT_INVENORY",
+      payload: currentInventory,
+    } as const),
 }
 
-export const getPlaces = (): TThunk => async (dispatch) => {
+export const getHierarchy = (): TThunk => async (dispatch) => {
   try {
     const response = await dataBaseAPI.getPlaces()
     const places = response.map((place: IPlaceResponse) => ({
       name: place.data.name,
       id: place.id,
-      parts: place.parts,
+      parts: place.parts === undefined ? [] : place.parts,
     }))
-    dispatch(actions.setPlaces(places))
+
+    let hierarchy: Array<any> = []
+    // Building search
+    places.forEach((place: IPlace) => {
+      if (place.id.indexOf("-") === -1) {
+        hierarchy.push({ id: place.id, parts: place.parts, name: place.name })
+      }
+    })
+    // Search for dependencies on parts
+    const hierarchyWithNodes = hierarchy.map((building: IHierarchy) => {
+      // Search for dependencies for node
+      const objNode = building.parts?.map((part: string) => {
+        const node = places.find((place: IPlace) => place.id === part)
+        // Search for dependencies for rooms
+        const objRoom = node?.parts?.map((part: string) => {
+          const room = places.find((place: IPlace) => place.id === part)
+          return room
+        })
+        return { name: node?.name, id: node?.id, parts: objRoom }
+      })
+      return { id: building.id, parts: objNode, name: building.name }
+    })
+
+    dispatch(actions.setHierarchy(hierarchyWithNodes))
   } catch (error) {
-    console.log(error)
     showAlert(AlertifyStatusEnum.error, "Не загружаются места")
   }
 }

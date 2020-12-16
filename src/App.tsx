@@ -1,23 +1,25 @@
 import React, { memo, useEffect } from "react"
-import { Switch } from "react-router"
+import { Route, Switch } from "react-router"
 import "./App.scss"
 import { withSuspense } from "./hoc/withSuspense"
-import { dataBaseAPI } from "./api/api-database"
-import { getInventory, getPlaces } from "./redux/database-reducer"
+import { getInventory, getHierarchy } from "./redux/database-reducer"
 import { useDispatch } from "react-redux"
+import Inventory from "./components/Inventory/Inventory"
 
 const App = memo(() => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getPlaces())
+    dispatch(getHierarchy())
     dispatch(getInventory())
   }, [])
 
   return (
     <>
       <div className="app-content">
-        <Switch></Switch>
+        <Switch>
+          <Route path="/" render={() => <Inventory />} />
+        </Switch>
       </div>
     </>
   )
