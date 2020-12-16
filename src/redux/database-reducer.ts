@@ -14,8 +14,9 @@ type TActions = TInferActions<typeof actions>
 type TThunk = TBaseThunk<TActions>
 
 let initialState = {
-  palces: [] as Array<IPlace>,
+  places: [] as Array<IPlace>,
   inventory: [] as Array<IInventory>,
+  hierarchy: [] as Array<any>,
 }
 
 export const databaseReducer = (
@@ -24,9 +25,35 @@ export const databaseReducer = (
 ): TInitialState => {
   switch (action.type) {
     case "DATABASE/SET_PLACES":
+      const places = action.payload
+
+      let hierarchy: Array<any> = []
+
+      // Building search
+      action.payload.forEach((place: IPlace) => {
+        if (place.id.indexOf("-") === -1) {
+          hierarchy.push({ id: place.id, parts: place.parts })
+        }
+      })
+      // Search for dependencies on parts
+      const hierarchyWithNodes = hierarchy.map((building: any) => {
+        const objNode = building.parts.map((part: string) => {
+          const node = places.find((place: IPlace) => place.id === part)
+          // Search for dependencies for rooms
+          const objRoom = node?.parts?.map((part: string) => {
+            const room = places.find((place: IPlace) => place.id === part)
+            return room
+          })
+          return { name: node?.name, id: node?.id, parts: objRoom }
+        })
+        return { id: building.id, parts: objNode }
+      })
+      // I tried to find the optimal algorithm, but I had to write my own (non-optimal)
+
       return {
         ...state,
-        palces: action.payload,
+        places,
+        hierarchy: hierarchyWithNodes,
       }
     case "DATABASE/SET_INVENTORY":
       return {
@@ -61,6 +88,7 @@ export const getPlaces = (): TThunk => async (dispatch) => {
     }))
     dispatch(actions.setPlaces(places))
   } catch (error) {
+    console.log(error)
     showAlert(AlertifyStatusEnum.error, "Не загружаются места")
   }
 }
