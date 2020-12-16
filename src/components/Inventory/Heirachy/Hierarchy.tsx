@@ -1,5 +1,6 @@
 import React, { memo } from "react"
 import { useSelector } from "react-redux"
+import s from "./Hierachy.module.scss"
 import { databaseSelectors } from "../../../redux/selectors/selectors"
 
 interface INode {
@@ -19,10 +20,14 @@ export const Hierarchy = memo<IProps>(({ handleClick }) => {
   }
 
   return (
-    <ul>
+    <ul className={s.hierachyPage}>
       {hierarchy.map((building: any) => (
         <>
-          <li key={building.id} onClick={() => handleClick(building.id)}>
+          <li
+            key={building.id}
+            onClick={() => handleClick(building.id)}
+            className={s.building}
+          >
             {building.name}
           </li>
           <Nodes handleClick={handleClick} parts={building.parts} />
@@ -39,24 +44,32 @@ interface ISubsidiariesProps {
 
 const Nodes = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
   return (
-    <ul style={{ marginLeft: "30px" }}>
+    <>
       {parts.map((node: any) => (
         <>
-          <li onClick={() => handleClick(node.id)} key={node.id}>
+          <li
+            onClick={() => handleClick(node.id)}
+            key={node.id}
+            className={s.nodes}
+          >
             {node.name}
           </li>
           {node.parts && <Rooms handleClick={handleClick} parts={node.parts} />}
         </>
       ))}
-    </ul>
+    </>
   )
 })
 
 const Rooms = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
   return (
-    <ul style={{ marginLeft: "60px" }}>
+    <ul>
       {parts.map((room: any) => (
-        <li onClick={() => handleClick(room.id)} key={room.id}>
+        <li
+          onClick={() => handleClick(room.id)}
+          key={room.id}
+          className={s.room}
+        >
           {room.name}
         </li>
       ))}

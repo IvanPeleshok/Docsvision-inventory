@@ -14,7 +14,12 @@ body {
 }
 
 .app-content {
+	color: white;
 	display: flex;
+	justify-content: center;
+	min-height: 100vh;
+	height: 100%;
+	background: rgb(239, 67, 219);
 
 	& .content {
 		position: relative;

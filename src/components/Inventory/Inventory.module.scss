@@ -1,0 +1,21 @@
+.inventoryPage {
+    margin: 30px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    max-width: 900px;
+    box-sizing: border-box;
+
+    & .heirachy {
+        flex-basis: 70%;
+        width: 100%;
+        padding: 20px;
+    }
+
+    & .nodeData {
+        text-align: center;
+        flex-basis: 30%;
+        padding: 20px;
+    }
+
+}

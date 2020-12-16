@@ -1,12 +1,17 @@
 import React from "react"
 import { HeirachyContainer } from "./Heirachy/HeirachyContainer"
-import { NodeData } from "./NodeData/NodeData"
+import { List } from "./List/List"
+import s from "./Inventory.module.scss"
 
 const Inventory = () => {
   return (
-    <div style={{ display: "gred", gridTemplateColumns: "2fr 2fr" }}>
-      <HeirachyContainer />
-      <NodeData />
+    <div className={s.inventoryPage}>
+      <div className={s.heirachy}>
+        <HeirachyContainer />
+      </div>
+      <div className={s.nodeData}>
+        <List />
+      </div>
     </div>
   )
 }
