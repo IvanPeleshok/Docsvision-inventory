@@ -1,5 +1,4 @@
 .hierachyPage {
-    font-weight: 700;
 
     & .building {
         margin-bottom: 15px;
@@ -9,8 +8,7 @@
         & .title {
             cursor: pointer;
             font-size: 20px;
-            color: rgb(11, 11, 11);
-            
+
             &:hover {
                 opacity: 0.8;
             }
@@ -21,7 +19,7 @@
 
             & .subtitle {
                 cursor: pointer;
-                font-size: 18px;
+                font-size: 16px;
                 color: rgb(255, 255, 255);
 
                 &:hover {
@@ -36,7 +34,6 @@
                 cursor: pointer;
                 font-size: 14px;
                 margin: 10px 0px 10px 25px;
-                color: rgb(206, 206, 206);
 
                 &:last-child {
                     margin-bottom: 0px;
@@ -48,33 +45,4 @@
             }
         }
     }
-
-
-    // & .nodes {
-    //     cursor: pointer;
-    //     margin-left: 15px;
-    //     margin-bottom: 20px;
-    //     font-size: 16px;
-
-    //     &:hover {
-    //         opacity: 0.8;
-    //     }
-    // }
-
-    // & .room {
-    //     cursor: pointer;
-    //     margin-left: 30px;
-    //     margin-bottom: 5px;
-    //     font-size: 14px;
-
-    //     &:hover {
-    //         opacity: 0.8;
-    //     }
-
-    //     &:last-child {
-    //         margin-bottom: 20px;
-    //     }
-    // }
-
-
 }

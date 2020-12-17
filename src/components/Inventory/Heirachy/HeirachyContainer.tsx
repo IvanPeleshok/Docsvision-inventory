@@ -16,11 +16,12 @@ export const HeirachyContainer = memo(() => {
   const handleClick = (id: string, name: string) => {
     dispatch(actions.setCurrentNode(id))
     dispatch(actions.setCurrentNameNode(name))
-    const currentInventory = PutAllSetsOfKeysWithData(
+    const node = PutAllSetsOfKeysWithData(
       ExtractKeysFromDependencies(id, hierarchy),
       inventory
     )
-    dispatch(actions.setCurrentInvenory(currentInventory))
+    dispatch(actions.setLevelNode(node.level))
+    dispatch(actions.setCurrentInvenory(node.currentInventory))
   }
 
   return <Hierarchy handleClick={handleClick} />

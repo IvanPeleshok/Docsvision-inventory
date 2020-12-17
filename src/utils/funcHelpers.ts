@@ -1,22 +1,32 @@
 import { IInventory } from "../interface/database"
+export enum NestingLevel {
+  room = "room",
+  above = "above",
+}
+
+export interface IDependency {
+  keys: Array<Array<string>>
+  level: NestingLevel
+}
 
 export const PutAllSetsOfKeysWithData = (
-  KeysFromDependencies: Array<Array<string>>,
+  dependency: IDependency,
   inventory: any
 ) => {
   let currentInventory: Array<IInventory> = []
   inventory.map((inventory: IInventory) => {
-    KeysFromDependencies[0].map((key: string) => {
+    dependency.keys[0].map((key: string) => {
       if (key === inventory.placeId) {
         currentInventory.push(inventory)
       }
     })
   })
-  return currentInventory
+  return { currentInventory, level: dependency.level }
 }
 
 export const ExtractKeysFromDependencies = (id: string, hierarchy: any) => {
-  const keysForInventory: any = []
+  let nestingLevel = NestingLevel.above
+  let keysForInventory: any = []
   // Get all dependency id if building was clicked
   hierarchy.map((building: any) => {
     if (building.id === id) {
@@ -53,7 +63,8 @@ export const ExtractKeysFromDependencies = (id: string, hierarchy: any) => {
   // Get all dependency ids if a room is clicked
   if (!nonEmptyArr) {
     keysForInventory.push([id])
+    nestingLevel = NestingLevel.room
   }
 
-  return keysForInventory
+  return { keys: keysForInventory, level: nestingLevel }
 }

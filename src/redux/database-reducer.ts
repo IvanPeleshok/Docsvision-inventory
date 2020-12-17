@@ -10,6 +10,7 @@ import { TInferActions, TBaseThunk } from "../types/redux"
 import { AlertifyStatusEnum } from "../types/types"
 import {
   ExtractKeysFromDependencies,
+  NestingLevel,
   PutAllSetsOfKeysWithData,
 } from "../utils/funcHelpers"
 import { showAlert } from "../utils/showAlert"
@@ -24,6 +25,7 @@ let initialState = {
   currentInventory: [] as Array<IInventory>,
   currenNode: "",
   currenName: "",
+  currenLevel: NestingLevel.above,
   loading: false,
 }
 
@@ -67,6 +69,11 @@ export const databaseReducer = (
         ...state,
         loading: false,
       }
+    case "DATABASE/SET_LEVEL_NODE":
+      return {
+        ...state,
+        currenLevel: action.payload,
+      }
     default:
       return state
   }
@@ -100,6 +107,8 @@ export const actions = {
     } as const),
   setLoadingTrue: () => ({ type: "DATABASE/SET_LOADING_TRUE" } as const),
   setLoadingFalse: () => ({ type: "DATABASE/SET_LOADING_FALSE" } as const),
+  setLevelNode: (levelNode: NestingLevel) =>
+    ({ type: "DATABASE/SET_LEVEL_NODE", payload: levelNode } as const),
 }
 
 export const getHierarchy = (): TThunk => async (dispatch) => {
@@ -164,15 +173,15 @@ export const getInventory = (): TThunk => async (dispatch) => {
 const _updateListCurrentInvetory = (): TThunk => async (dispatch, getState) => {
   await dispatch(getInventory())
 
-  const currentInventory = await PutAllSetsOfKeysWithData(
+  const node = await PutAllSetsOfKeysWithData(
     ExtractKeysFromDependencies(
       getState().database.currenNode,
       getState().database.hierarchy
     ),
     getState().database.inventory
   )
-
-  dispatch(actions.setCurrentInvenory(currentInventory))
+  dispatch(actions.setLevelNode(node.level))
+  dispatch(actions.setCurrentInvenory(node.currentInventory))
 }
 
 export const createInventory = (
@@ -199,7 +208,15 @@ export const updateInventory = (inventory: IInventory): TThunk => async (
   try {
     dispatch(actions.setLoadingTrue())
 
-    // await databaseAPI.updateInventory(inventory)
+    // await databaseAPI.updateInventory
+    // Why I don't use it is written in api-database
+
+    await databaseAPI.deleteInventory(inventory.id)
+    await databaseAPI.createInventory(
+      inventory.name,
+      inventory.count,
+      inventory.placeId
+    )
 
     dispatch(_updateListCurrentInvetory())
 

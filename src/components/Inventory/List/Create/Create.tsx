@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { databaseSelectors } from "../../../../redux/selectors/selectors"
 import { CustomButton } from "../../../Common/CustomForm/CustomButton"
 import { CustomField } from "../../../Common/CustomForm/CustomField"
-import { validationSchema } from "../List"
+import { IInitialValues, validationSchema } from "../List"
 import { createInventory } from "../../../../redux/database-reducer"
 import s from "../List.module.scss"
 

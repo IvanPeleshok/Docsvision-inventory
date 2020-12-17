@@ -1,7 +1,7 @@
 import React from "react"
 import { HeirachyContainer } from "./Heirachy/HeirachyContainer"
-import { List } from "./List/List"
 import s from "./Inventory.module.scss"
+import { ListContainer } from "./List/ListContainer"
 
 const Inventory = () => {
   return (
@@ -10,7 +10,7 @@ const Inventory = () => {
         <HeirachyContainer />
       </div>
       <div className={s.nodeData}>
-        <List />
+        <ListContainer />
       </div>
     </div>
   )

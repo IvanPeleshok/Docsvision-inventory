@@ -63,6 +63,9 @@ export const databaseAPI = {
       .then(() => {})
       .catch(() => showAlert(AlertifyStatusEnum.error, "Не удалось удалить"))
   },
+
+  // The object is overwritten and returned by empty fields
+  // Therefore, I will delete and create a new one with changed fields
   updateInventory(inventory: IInventory) {
     let filestore = firebase.firestore()
     return filestore
@@ -70,8 +73,8 @@ export const databaseAPI = {
       .doc(inventory.id)
       .set({
         count: inventory.count,
-        placeId: filestore.collection("place").doc(inventory.placeId),
         name: inventory.name,
+        placeId: inventory.placeId,
       })
       .then(() => {})
       .catch(() => showAlert(AlertifyStatusEnum.error, "Не удалось обновить"))

@@ -1,21 +1,18 @@
-import React, { memo, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { databaseSelectors } from "../../../redux/selectors/selectors"
+import React, { memo } from "react"
+import { useDispatch } from "react-redux"
 import { Formik, Form } from "formik"
 import * as yup from "yup"
 import { CustomField } from "../../Common/CustomForm/CustomField"
 import { CustomButton } from "../../Common/CustomForm/CustomButton"
 import { IInventory } from "../../../interface/database"
-import { Create } from "./Create/Create"
 import s from "./List.module.scss"
-import {
-  updateInventory,
-  removeInventory,
-} from "../../../redux/database-reducer"
+import { updateInventory } from "../../../redux/database-reducer"
+import { IDependency, NestingLevel } from "../../../utils/funcHelpers"
+import { Room } from "./Room/Room"
 
 export interface IInitialValues {
   name: string
-  count: number
+  count: string
 }
 
 export const validationSchema = yup.object({
@@ -30,144 +27,131 @@ export const validationSchema = yup.object({
     .required("Введите название задачи"),
 })
 
-export const List = memo(() => {
-  const dispatch = useDispatch()
+interface IProps {
+  currenName: string
+  currenNode: string
+  dependency: IDependency
+  create: boolean
+  setCreate: (value: React.SetStateAction<boolean>) => void
+  edit: boolean
+  setEdit: (value: React.SetStateAction<boolean>) => void
+  currentInventory: Array<IInventory>
+  handleDelete: (id: string) => void
+  handleUpdate?: (id: string) => void
+}
 
-  const currentInventory = useSelector(databaseSelectors.getCurrentInventory)
-  const currenNode = useSelector(databaseSelectors.getCurrentNode)
-  const currenName = useSelector(databaseSelectors.getCurrentName)
-
-  const [edit, setEdit] = useState(false)
-  const [create, setCreate] = useState(false)
-
-  if (!currentInventory.length && !currenNode) {
+export const List = memo<IProps>(
+  ({
+    currenName,
+    currenNode,
+    dependency,
+    create,
+    setCreate,
+    edit,
+    setEdit,
+    currentInventory,
+    handleDelete,
+  }) => {
+    const dispatch = useDispatch()
     return (
       <>
-        <div className={s.notFound}>Необходимо сделать выбор</div>
-      </>
-    )
-  } else if (!currentInventory.length) {
-    return (
-      <>
-        <div className={s.notFound}>
-          <h2 className={s.title}>{currenName}</h2>
-          <p className={s.itemsNotFound}>
-            В выбранном помещении нет оборудования
-          </p>
-        </div>
-        <button
-          onClick={() => setCreate((prevState) => !prevState)}
-          className={s.btn}
-        >
-          Создать
-        </button>
-        {create && <Create setCreate={setCreate} />}
-      </>
-    )
-  }
+        <h2 className={s.title}>{currenName}</h2>
 
-  const handleDelete = (id: string) => {
-    dispatch(removeInventory(id))
-    setEdit(false)
-  }
+        {dependency.keys[0].length === 1 ? (
+          <Room
+            dependency={dependency}
+            currenName={currenName}
+            currentInventory={currentInventory}
+            setCreate={setCreate}
+            create={create}
+            edit={edit}
+            setEdit={setEdit}
+          />
+        ) : null}
 
-  return (
-    <>
-      <h2 className={s.title}>{currenName}</h2>
+        {currentInventory.map((inventory: IInventory) => (
+          <div className={s.listPage} key={inventory.id}>
+            <Formik
+              validateOnChange={true}
+              initialValues={{
+                name: inventory.name,
+                count: inventory.count,
+              }}
+              validationSchema={validationSchema}
+              enableReinitialize={true}
+              onSubmit={async (values, { setSubmitting, resetForm }) => {
+                setSubmitting(false)
 
-      <button
-        onClick={() => setCreate((prevState) => !prevState)}
-        className={s.btn}
-      >
-        Создать
-      </button>
-      {create && <Create setCreate={setCreate} />}
+                resetForm()
 
-      <button
-        onClick={() => setEdit((prevState) => !prevState)}
-        className={s.btn}
-      >
-        {edit ? "Выйти из режима редактировния" : "Режим редактирования"}
-      </button>
+                dispatch(
+                  updateInventory({
+                    id: inventory.id,
+                    count: values.count,
+                    name: values.name,
+                    placeId: currenNode,
+                  })
+                )
+              }}
+            >
+              {({ isSubmitting }) => {
+                return (
+                  <Form>
+                    <div className={s.form}>
+                      <h3 className={s.titleForObj}>Название оборудования</h3>
 
-      {currentInventory.map((inventory: IInventory) => (
-        <div className={s.listPage} key={inventory.id}>
-          <Formik
-            validateOnChange={true}
-            initialValues={{
-              name: inventory.name,
-              count: inventory.count,
-            }}
-            validationSchema={validationSchema}
-            enableReinitialize={true}
-            onSubmit={async (values, { setSubmitting, resetForm }) => {
-              setSubmitting(false)
-              resetForm()
-              dispatch(
-                updateInventory({
-                  id: inventory.id,
-                  count: values.count,
-                  name: values.name,
-                  placeId: currenNode,
-                })
-              )
-            }}
-          >
-            {({ isSubmitting }) => {
-              return (
-                <Form>
-                  <div className={s.form}>
-                    <h3 className={s.titleForObj}>Название оборудования</h3>
-                    <CustomField
-                      disabled
-                      name="name"
-                      placeholder="Имя"
-                      className={s.input}
-                      autoComplete="off"
-                    />
-
-                    <h3 className={s.titleForObj}>Количество</h3>
-                    {edit ? (
-                      <CustomField
-                        name="count"
-                        placeholder="Количество"
-                        className={s.input}
-                        autoComplete="off"
-                      />
-                    ) : (
                       <CustomField
                         disabled
-                        name="count"
-                        placeholder="Количество"
+                        name="name"
+                        placeholder="Имя"
                         className={s.input}
                         autoComplete="off"
                       />
-                    )}
 
-                    {edit && (
-                      <div className={s.forbuttons}>
-                        <CustomButton
-                          type="submit"
-                          className={s.btn}
-                          text={"Изменить"}
-                          isSubmitting={isSubmitting}
-                        ></CustomButton>
+                      <h3 className={s.titleForObj}>Количество</h3>
 
-                        <button
-                          className={s.btn}
-                          onClick={() => handleDelete(inventory.id)}
-                        >
-                          Удалить
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </Form>
-              )
-            }}
-          </Formik>
-        </div>
-      ))}
-    </>
-  )
-})
+                      {edit ? (
+                        <>
+                          <CustomField
+                            name="count"
+                            placeholder="Количество"
+                            className={s.input}
+                            autoComplete="off"
+                          />
+
+                          <div className={s.forbuttons}>
+                            <CustomButton
+                              type="submit"
+                              className={s.btn}
+                              text={"Изменить"}
+                              isSubmitting={isSubmitting}
+                            ></CustomButton>
+
+                            <button
+                              className={s.btn}
+                              onClick={() => handleDelete(inventory.id)}
+                            >
+                              Удалить
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <CustomField
+                          disabled
+                          name="count"
+                          placeholder="Количество"
+                          className={s.input}
+                          autoComplete="off"
+                        />
+                      )}
+                    </div>
+                  </Form>
+                )
+              }}
+            </Formik>
+          </div>
+        ))}
+      </>
+    )
+  }
+)
