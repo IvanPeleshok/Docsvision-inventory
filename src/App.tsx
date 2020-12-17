@@ -1,5 +1,5 @@
 import React, { memo, useEffect, useLayoutEffect } from "react"
-import { Route, Switch, useHistory } from "react-router"
+import { Redirect, Route, Switch, useHistory } from "react-router"
 import "./App.scss"
 import { withSuspense } from "./hoc/withSuspense"
 import { getInventory, getHierarchy } from "./redux/database-reducer"
@@ -30,6 +30,7 @@ const App = memo(() => {
       <div className="app-content">
         <Switch>
           <Route path="/database" render={withSuspense(Inventory)} />
+          <Route path="*" render={() => <Redirect to="/database" />} />
         </Switch>
       </div>
     </>
