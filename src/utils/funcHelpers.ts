@@ -28,7 +28,6 @@ export const extractKeysFromDependencies = (
   id: string,
   hierarchy: Array<IHierarchy>
 ) => {
-  console.log(hierarchy)
   let nestingLevel = NestingLevel.above
   let keysForInventory: any = []
   // Get all dependency id if building was clicked
