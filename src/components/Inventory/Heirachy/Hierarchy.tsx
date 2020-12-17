@@ -30,7 +30,7 @@ export const Hierarchy = memo<IProps>(({ handleClick }) => {
             >
               {building.name}
             </p>
-            <Nodes handleClick={handleClick} parts={building.parts} />
+            <Nodes handleClick={handleClick} parts={building?.parts} />
           </li>
         </div>
       ))}
@@ -39,14 +39,14 @@ export const Hierarchy = memo<IProps>(({ handleClick }) => {
 })
 
 interface ISubsidiariesProps {
-  parts: Array<any>
+  parts?: Array<any>
   handleClick: (id: string, name: string) => void
 }
 
 const Nodes = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
   return (
     <>
-      {parts.map((node: any) => (
+      {parts?.map((node: any) => (
         <div key={node.name}>
           <ul key={node.name} className={s.nodes}>
             <p
@@ -56,7 +56,7 @@ const Nodes = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
               {node.name}
             </p>
             {node.parts && (
-              <Rooms handleClick={handleClick} parts={node.parts} />
+              <Rooms handleClick={handleClick} parts={node?.parts} />
             )}
           </ul>
         </div>
@@ -68,11 +68,27 @@ const Nodes = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
 const Rooms = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
   return (
     <>
-      {parts.map((room: any) => (
+      {parts?.map((room: any) => (
         <li key={room.name} className={s.items}>
           <p onClick={() => handleClick(room.id, room.name)}>{room.name}</p>
+          <ForTheThirdNesting handleClick={handleClick} parts={room?.parts} />
         </li>
       ))}
     </>
   )
 })
+
+// Additionally, if there are floors
+const ForTheThirdNesting = memo<ISubsidiariesProps>(
+  ({ parts, handleClick }) => {
+    return (
+      <>
+        {parts?.map((room: any) => (
+          <li key={room.name} className={s.forTheThirdNesting}>
+            <p onClick={() => handleClick(room.id, room.name)}>{room.name}</p>
+          </li>
+        ))}
+      </>
+    )
+  }
+)

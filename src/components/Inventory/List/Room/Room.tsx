@@ -6,7 +6,6 @@ import s from "../List.module.scss"
 
 interface IProps {
   dependency: IDependency
-  currenName: string
   setCreate: (value: React.SetStateAction<boolean>) => void
   create: boolean
   currentInventory: Array<IInventory>
@@ -15,7 +14,7 @@ interface IProps {
 }
 
 export const Room = memo<IProps>(
-  ({ currenName, currentInventory, setCreate, create, edit, setEdit }) => {
+  ({ currentInventory, setCreate, create, edit, setEdit }) => {
     //
     if (currentInventory.length === 0) {
       return (

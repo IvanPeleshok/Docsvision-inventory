@@ -35,12 +35,29 @@
                 font-size: 14px;
                 margin: 10px 0px 10px 25px;
 
+
                 &:last-child {
                     margin-bottom: 0px;
                 }
 
                 &:hover {
                     opacity: 0.8;
+                }
+
+                & .forTheThirdNesting {
+                    margin-left: 20px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    margin: 10px 0px 10px 25px;
+
+
+                    &:last-child {
+                        margin-bottom: 0px;
+                    }
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
                 }
             }
         }

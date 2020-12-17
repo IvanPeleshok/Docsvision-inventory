@@ -11,6 +11,8 @@ import { AlertifyStatusEnum } from "../types/types"
 import {
   ExtractKeysFromDependencies,
   NestingLevel,
+  ParseNodes,
+  ParseTheAnswerToTheHierarchyLastNode,
   PutAllSetsOfKeysWithData,
 } from "../utils/funcHelpers"
 import { showAlert } from "../utils/showAlert"
@@ -131,18 +133,33 @@ export const getHierarchy = (): TThunk => async (dispatch) => {
       }
     })
     // Search for dependencies on parts
-    const hierarchyWithNodes = hierarchy.map((building: IHierarchy) => {
-      // Search for dependencies for node
-      const objNode = building.parts?.map((part: string) => {
-        const node = places.find((place: IPlace) => place.id === part)
-        // Search for dependencies for rooms
-        const objRoom = node?.parts?.map((part: string) => {
-          const room = places.find((place: IPlace) => place.id === part)
-          return room
+    // Nesting level => 5
+    const hierarchyWithNodes = hierarchy.map((node: IHierarchy) => {
+      const objNode = node?.parts?.map((part: string) => {
+        const node = ParseNodes(places, part)
+        const objNode = node?.parts?.map((part: string) => {
+          const node = ParseNodes(places, part)
+          const objNode = node?.parts?.map((part: string) => {
+            const node = ParseNodes(places, part)
+            const objNode = node?.parts?.map((part: string) => {
+              const node = ParseNodes(places, part)
+              const objNode = node?.parts?.map((part: string) => {
+                const node = ParseNodes(places, part)
+                const objNode = ParseTheAnswerToTheHierarchyLastNode(
+                  node,
+                  places
+                )
+                return { name: node.name, id: node.id, parts: objNode }
+              })
+              return { name: node.name, id: node.id, parts: objNode }
+            })
+            return { name: node.name, id: node.id, parts: objNode }
+          })
+          return { name: node.name, id: node.id, parts: objNode }
         })
-        return { name: node?.name, id: node?.id, parts: objRoom }
+        return { name: node.name, id: node.id, parts: objNode }
       })
-      return { id: building.id, parts: objNode, name: building.name }
+      return { name: node.name, id: node.id, parts: objNode }
     })
 
     dispatch(actions.setHierarchy(hierarchyWithNodes))

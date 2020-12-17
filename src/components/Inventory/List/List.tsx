@@ -3,12 +3,12 @@ import { useDispatch } from "react-redux"
 import { Formik, Form } from "formik"
 import * as yup from "yup"
 import { CustomField } from "../../Common/CustomForm/CustomField"
-import { CustomButton } from "../../Common/CustomForm/CustomButton"
 import { IInventory } from "../../../interface/database"
 import s from "./List.module.scss"
 import { updateInventory } from "../../../redux/database-reducer"
-import { IDependency, NestingLevel } from "../../../utils/funcHelpers"
+import { IDependency } from "../../../utils/funcHelpers"
 import { Room } from "./Room/Room"
+import { Edit } from "./Edit/Edit"
 
 export interface IInitialValues {
   name: string
@@ -60,7 +60,6 @@ export const List = memo<IProps>(
         {dependency.keys[0].length === 1 ? (
           <Room
             dependency={dependency}
-            currenName={currenName}
             currentInventory={currentInventory}
             setCreate={setCreate}
             create={create}
@@ -100,49 +99,32 @@ export const List = memo<IProps>(
                     <div className={s.form}>
                       <h3 className={s.titleForObj}>Название оборудования</h3>
 
-                      <CustomField
-                        disabled
-                        name="name"
-                        placeholder="Имя"
-                        className={s.input}
-                        autoComplete="off"
-                      />
-
-                      <h3 className={s.titleForObj}>Количество</h3>
-
                       {edit ? (
+                        <Edit
+                          isSubmitting={isSubmitting}
+                          handleDelete={handleDelete}
+                          id={inventory.id}
+                        />
+                      ) : (
                         <>
                           <CustomField
+                            disabled
+                            name="name"
+                            placeholder="Имя"
+                            className={s.input}
+                            autoComplete="off"
+                          />
+
+                          <h3 className={s.titleForObj}>Количество</h3>
+
+                          <CustomField
+                            disabled
                             name="count"
                             placeholder="Количество"
                             className={s.input}
                             autoComplete="off"
                           />
-
-                          <div className={s.forbuttons}>
-                            <CustomButton
-                              type="submit"
-                              className={s.btn}
-                              text={"Изменить"}
-                              isSubmitting={isSubmitting}
-                            ></CustomButton>
-
-                            <button
-                              className={s.btn}
-                              onClick={() => handleDelete(inventory.id)}
-                            >
-                              Удалить
-                            </button>
-                          </div>
                         </>
-                      ) : (
-                        <CustomField
-                          disabled
-                          name="count"
-                          placeholder="Количество"
-                          className={s.input}
-                          autoComplete="off"
-                        />
                       )}
                     </div>
                   </Form>
