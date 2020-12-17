@@ -8,7 +8,11 @@ import { validationSchema } from "../List"
 import { createInventory } from "../../../../redux/database-reducer"
 import s from "../List.module.scss"
 
-export const Create = memo(() => {
+interface IProps {
+  setCreate: (state: boolean) => void
+}
+
+export const Create = memo<IProps>(({ setCreate }) => {
   const dispatch = useDispatch()
 
   // name current node (click)
@@ -28,7 +32,7 @@ export const Create = memo(() => {
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             setSubmitting(false)
             dispatch(createInventory(values.name, +values.count, id))
-
+            setCreate(false)
             resetForm()
           }}
         >

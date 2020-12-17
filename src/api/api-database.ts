@@ -1,4 +1,5 @@
 import firebase from "../firebase/firebase"
+import { IInventory } from "../interface/database"
 import { AlertifyStatusEnum } from "../types/types"
 import { showAlert } from "../utils/showAlert"
 
@@ -50,27 +51,29 @@ export const databaseAPI = {
         count: count,
         place: filestore.collection("place").doc(id),
       })
-      .then(() =>
-        showAlert(AlertifyStatusEnum.success, "Оборудование добавлено")
-      )
+      .then(() => {})
       .catch(() => showAlert(AlertifyStatusEnum.error, "Не удалось добавить"))
   },
   deleteInventory(id: string) {
     return firebase
-      .filestore()
-      .collection("inventory")
-      .doc(id)
-      .delete()
-      .then(() => (response: any) => response)
-      .catch(() => {})
-  },
-  updateInventory(id: string, count: number) {
-    return firebase
       .firestore()
       .collection("inventory")
       .doc(id)
-      .set({ count })
-      .then(() => (response: any) => response)
+      .delete()
+      .then(() => {})
+      .catch(() => showAlert(AlertifyStatusEnum.error, "Не удалось удалить"))
+  },
+  updateInventory(inventory: IInventory) {
+    let filestore = firebase.firestore()
+    return filestore
+      .collection("inventory")
+      .doc(inventory.id)
+      .set({
+        count: inventory.count,
+        placeId: filestore.collection("place").doc(inventory.placeId),
+        name: inventory.name,
+      })
+      .then(() => {})
       .catch(() => showAlert(AlertifyStatusEnum.error, "Не удалось обновить"))
   },
 }

@@ -1,9 +1,16 @@
+.loader {
+    position: absolute;
+    height: 5px;
+    width: 100%;
+    z-index: 2;
+}
+
 .progress {
     position: relative;
     height: 5px;
     display: block;
     width: 100%;
-    background-color: #9197e1;
+    background-color: palevioletred;
     // border-radius: 2px;
     background-clip: padding-box;
     // margin: 0.5rem 0 1rem 0;
@@ -11,7 +18,7 @@
 }
 
 .progress .indeterminate {
-    background-color: darkblue;
+    background-color: rgb(255, 255, 255);
 }
 
 .progress .indeterminate:before {

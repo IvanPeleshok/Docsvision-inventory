@@ -8,7 +8,7 @@ interface INode {
 }
 
 interface IProps {
-  handleClick: (id: string) => void
+  handleClick: (id: string, name: string) => void
 }
 
 export const Hierarchy = memo<IProps>(({ handleClick }) => {
@@ -22,16 +22,17 @@ export const Hierarchy = memo<IProps>(({ handleClick }) => {
   return (
     <ul className={s.hierachyPage}>
       {hierarchy.map((building: any) => (
-        <>
-          <li
-            key={building.id}
-            onClick={() => handleClick(building.id)}
-            className={s.building}
-          >
-            {building.name}
+        <div key={building.name}>
+          <li className={s.building}>
+            <p
+              onClick={() => handleClick(building.id, building.name)}
+              className={s.title}
+            >
+              {building.name}
+            </p>
+            <Nodes handleClick={handleClick} parts={building.parts} />
           </li>
-          <Nodes handleClick={handleClick} parts={building.parts} />
-        </>
+        </div>
       ))}
     </ul>
   )
@@ -39,23 +40,26 @@ export const Hierarchy = memo<IProps>(({ handleClick }) => {
 
 interface ISubsidiariesProps {
   parts: Array<any>
-  handleClick: (id: string) => void
+  handleClick: (id: string, name: string) => void
 }
 
 const Nodes = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
   return (
     <>
       {parts.map((node: any) => (
-        <>
-          <li
-            onClick={() => handleClick(node.id)}
-            key={node.id}
-            className={s.nodes}
-          >
-            {node.name}
-          </li>
-          {node.parts && <Rooms handleClick={handleClick} parts={node.parts} />}
-        </>
+        <div key={node.name}>
+          <ul key={node.name} className={s.nodes}>
+            <p
+              onClick={() => handleClick(node.id, node.name)}
+              className={s.subtitle}
+            >
+              {node.name}
+            </p>
+            {node.parts && (
+              <Rooms handleClick={handleClick} parts={node.parts} />
+            )}
+          </ul>
+        </div>
       ))}
     </>
   )
@@ -65,12 +69,8 @@ const Rooms = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
   return (
     <>
       {parts.map((room: any) => (
-        <li
-          onClick={() => handleClick(room.id)}
-          key={room.id}
-          className={s.room}
-        >
-          {room.name}
+        <li key={room.name} className={s.items}>
+          <p onClick={() => handleClick(room.id, room.name)}>{room.name}</p>
         </li>
       ))}
     </>

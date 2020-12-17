@@ -20,15 +20,7 @@ body {
 	min-height: 100vh;
 	height: 100%;
 	background: rgb(239, 67, 219);
-
-	& .content {
-		position: relative;
-		width: 100%;
-		padding: 30px;
-		box-sizing: border-box;
-		display: flex;
-		flex-direction: column;
-	}
+	position: relative;
 }
 
 ::-webkit-scrollbar {

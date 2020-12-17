@@ -35,6 +35,8 @@ export const List = memo(() => {
 
   const currentInventory = useSelector(databaseSelectors.getCurrentInventory)
   const currenNode = useSelector(databaseSelectors.getCurrentNode)
+  const currenName = useSelector(databaseSelectors.getCurrentName)
+
   const [edit, setEdit] = useState(false)
   const [create, setCreate] = useState(false)
 
@@ -48,22 +50,48 @@ export const List = memo(() => {
     return (
       <>
         <div className={s.notFound}>
-          Оборудования не обноруженно в {currenNode}
+          <h2 className={s.title}>{currenName}</h2>
+          <p className={s.itemsNotFound}>
+            В выбранном помещении нет оборудования
+          </p>
         </div>
-        <Create />
+        <button
+          onClick={() => setCreate((prevState) => !prevState)}
+          className={s.btn}
+        >
+          Создать
+        </button>
+        {create && <Create setCreate={setCreate} />}
       </>
     )
   }
 
   const handleDelete = (id: string) => {
     dispatch(removeInventory(id))
+    setEdit(false)
   }
 
   return (
     <>
-      <h2 className={s.title}>Оборудование</h2>
+      <h2 className={s.title}>{currenName}</h2>
+
+      <button
+        onClick={() => setCreate((prevState) => !prevState)}
+        className={s.btn}
+      >
+        Создать
+      </button>
+      {create && <Create setCreate={setCreate} />}
+
+      <button
+        onClick={() => setEdit((prevState) => !prevState)}
+        className={s.btn}
+      >
+        {edit ? "Выйти из режима редактировния" : "Режим редактирования"}
+      </button>
+
       {currentInventory.map((inventory: IInventory) => (
-        <div className={s.listPage}>
+        <div className={s.listPage} key={inventory.id}>
           <Formik
             validateOnChange={true}
             initialValues={{
@@ -75,7 +103,14 @@ export const List = memo(() => {
             onSubmit={async (values, { setSubmitting, resetForm }) => {
               setSubmitting(false)
               resetForm()
-              dispatch(updateInventory(inventory.id, values.count))
+              dispatch(
+                updateInventory({
+                  id: inventory.id,
+                  count: values.count,
+                  name: values.name,
+                  placeId: currenNode,
+                })
+              )
             }}
           >
             {({ isSubmitting }) => {
@@ -133,22 +168,6 @@ export const List = memo(() => {
           </Formik>
         </div>
       ))}
-
-      <div>
-        <button
-          onClick={() => setEdit((prevState) => !prevState)}
-          className={s.btn}
-        >
-          {edit ? "Выйти из режима редактировния" : "Режим редактирования"}
-        </button>
-        <button
-          onClick={() => setCreate((prevState) => !prevState)}
-          className={s.btn}
-        >
-          Создать
-        </button>
-        {create && <Create />}
-      </div>
     </>
   )
 })

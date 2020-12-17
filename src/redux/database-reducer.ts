@@ -7,6 +7,12 @@ import {
   IHierarchy,
 } from "../interface/database"
 import { TInferActions, TBaseThunk } from "../types/redux"
+import { AlertifyStatusEnum } from "../types/types"
+import {
+  ExtractKeysFromDependencies,
+  PutAllSetsOfKeysWithData,
+} from "../utils/funcHelpers"
+import { showAlert } from "../utils/showAlert"
 
 export type TInitialState = typeof initialState
 type TActions = TInferActions<typeof actions>
@@ -16,7 +22,9 @@ let initialState = {
   hierarchy: [] as Array<any>,
   inventory: [] as Array<IInventory>,
   currentInventory: [] as Array<IInventory>,
-  currenNode: "" as string,
+  currenNode: "",
+  currenName: "",
+  loading: false,
 }
 
 export const databaseReducer = (
@@ -39,16 +47,25 @@ export const databaseReducer = (
         ...state,
         currenNode: action.payload,
       }
-    case "DATABASE/CREATE_INVENTORY":
+    case "DATABASE/SET_CURRENT_MANE_NODE":
       return {
         ...state,
-        inventory: [...state.inventory, action.payload],
-        currentInventory: [...state.currentInventory, action.payload],
+        currenName: action.payload,
       }
     case "DATABASE/SET_CURRENT_INVENORY":
       return {
         ...state,
         currentInventory: action.payload,
+      }
+    case "DATABASE/SET_LOADING_TRUE":
+      return {
+        ...state,
+        loading: true,
+      }
+    case "DATABASE/SET_LOADING_FALSE":
+      return {
+        ...state,
+        loading: false,
       }
     default:
       return state
@@ -71,21 +88,26 @@ export const actions = {
       type: "DATABASE/SET_CURRENT_NODE",
       payload: node,
     } as const),
-  createInventory: (inventory: IInventory) =>
+  setCurrentNameNode: (name: string) =>
     ({
-      type: "DATABASE/CREATE_INVENTORY",
-      payload: inventory,
+      type: "DATABASE/SET_CURRENT_MANE_NODE",
+      payload: name,
     } as const),
   setCurrentInvenory: (currentInventory: Array<IInventory>) =>
     ({
       type: "DATABASE/SET_CURRENT_INVENORY",
       payload: currentInventory,
     } as const),
+  setLoadingTrue: () => ({ type: "DATABASE/SET_LOADING_TRUE" } as const),
+  setLoadingFalse: () => ({ type: "DATABASE/SET_LOADING_FALSE" } as const),
 }
 
 export const getHierarchy = (): TThunk => async (dispatch) => {
   try {
+    dispatch(actions.setLoadingTrue())
+
     const response = await databaseAPI.getPlaces()
+
     const places = response.map((place: IPlaceResponse) => ({
       name: place.data.name,
       id: place.id,
@@ -115,20 +137,42 @@ export const getHierarchy = (): TThunk => async (dispatch) => {
     })
 
     dispatch(actions.setHierarchy(hierarchyWithNodes))
+
+    dispatch(actions.setLoadingFalse())
   } catch (error) {}
 }
 
 export const getInventory = (): TThunk => async (dispatch) => {
   try {
+    dispatch(actions.setLoadingTrue())
+
     const response = await databaseAPI.getInventory()
+
     const inventory = response?.map((inventory: IInventoryResponse) => ({
       name: inventory.data.name,
       count: +inventory.data.count,
       id: inventory.id,
       placeId: inventory.placeId,
     }))
+
     dispatch(actions.setInventory(inventory))
+
+    dispatch(actions.setLoadingFalse())
   } catch (error) {}
+}
+
+const _updateListCurrentInvetory = (): TThunk => async (dispatch, getState) => {
+  await dispatch(getInventory())
+
+  const currentInventory = await PutAllSetsOfKeysWithData(
+    ExtractKeysFromDependencies(
+      getState().database.currenNode,
+      getState().database.hierarchy
+    ),
+    getState().database.inventory
+  )
+
+  dispatch(actions.setCurrentInvenory(currentInventory))
 }
 
 export const createInventory = (
@@ -137,23 +181,44 @@ export const createInventory = (
   id: string
 ): TThunk => async (dispatch) => {
   try {
+    dispatch(actions.setLoadingTrue())
+
     await databaseAPI.createInventory(name, count, id)
-    dispatch(actions.createInventory({ placeId: id, count, id, name }))
+
+    dispatch(_updateListCurrentInvetory())
+
+    dispatch(actions.setLoadingFalse())
+
+    showAlert(AlertifyStatusEnum.success, "Оборудование добавлено")
   } catch (error) {}
 }
 
-export const updateInventory = (id: string, count: number): TThunk => async (
+export const updateInventory = (inventory: IInventory): TThunk => async (
   dispatch
 ) => {
   try {
-    const response = await databaseAPI.updateInventory(id, count)
-    console.log(response)
+    dispatch(actions.setLoadingTrue())
+
+    // await databaseAPI.updateInventory(inventory)
+
+    dispatch(_updateListCurrentInvetory())
+
+    dispatch(actions.setLoadingFalse())
+
+    showAlert(AlertifyStatusEnum.success, "Оборудование обновлено")
   } catch (error) {}
 }
 
 export const removeInventory = (id: string): TThunk => async (dispatch) => {
   try {
-    const response = await databaseAPI.deleteInventory(id)
-    console.log(response)
+    dispatch(actions.setLoadingTrue())
+
+    await databaseAPI.deleteInventory(id)
+
+    dispatch(_updateListCurrentInvetory())
+
+    dispatch(actions.setLoadingFalse())
+
+    showAlert(AlertifyStatusEnum.success, "Оборудование удалено")
   } catch (error) {}
 }
