@@ -9,7 +9,7 @@ export interface IDependency {
   level: NestingLevel
 }
 
-export const PutAllSetsOfKeysWithData = (
+export const putAllSetsOfKeysWithData = (
   dependency: IDependency,
   inventory: Array<IInventory>
 ) => {
@@ -24,7 +24,7 @@ export const PutAllSetsOfKeysWithData = (
   return { currentInventory, level: dependency.level }
 }
 
-export const ExtractKeysFromDependencies = (
+export const extractKeysFromDependencies = (
   id: string,
   hierarchy: Array<IHierarchy>
 ) => {
@@ -108,11 +108,11 @@ export const ExtractKeysFromDependencies = (
   return { keys: keysForInventory, level: nestingLevel }
 }
 
-export const ParseNodes = (places: Array<IPlace>, part: string): any => {
+export const parseNodes = (places: Array<IPlace>, part: string): any => {
   return places.find((place: IPlace) => place.id === part)
 }
 
-export const ParseTheAnswerToTheHierarchyLastNode = (
+export const parseTheAnswerToTheHierarchyLastNode = (
   node: any,
   places: Array<IPlace>
 ) => {
@@ -121,4 +121,34 @@ export const ParseTheAnswerToTheHierarchyLastNode = (
     return room
   })
   return objNode
+}
+
+export const createHierarchyWeb = (
+  hierarchy: Array<any>,
+  places: Array<IPlace>
+) => {
+  return hierarchy.map((node: IHierarchy) => {
+    const objNode = node?.parts?.map((part: string) => {
+      const node = parseNodes(places, part)
+      const objNode = node?.parts?.map((part: string) => {
+        const node = parseNodes(places, part)
+        const objNode = node?.parts?.map((part: string) => {
+          const node = parseNodes(places, part)
+          const objNode = node?.parts?.map((part: string) => {
+            const node = parseNodes(places, part)
+            const objNode = node?.parts?.map((part: string) => {
+              const node = parseNodes(places, part)
+              const objNode = parseTheAnswerToTheHierarchyLastNode(node, places)
+              return { name: node.name, id: node.id, parts: objNode }
+            })
+            return { name: node.name, id: node.id, parts: objNode }
+          })
+          return { name: node.name, id: node.id, parts: objNode }
+        })
+        return { name: node.name, id: node.id, parts: objNode }
+      })
+      return { name: node.name, id: node.id, parts: objNode }
+    })
+    return { name: node.name, id: node.id, parts: objNode }
+  })
 }

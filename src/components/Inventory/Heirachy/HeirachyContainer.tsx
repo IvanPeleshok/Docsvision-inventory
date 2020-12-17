@@ -4,8 +4,8 @@ import { actions } from "../../../redux/database-reducer"
 import { databaseSelectors } from "../../../redux/selectors/selectors"
 import { Hierarchy } from "./Hierarchy"
 import {
-  ExtractKeysFromDependencies,
-  PutAllSetsOfKeysWithData,
+  extractKeysFromDependencies,
+  putAllSetsOfKeysWithData,
 } from "../../../utils/funcHelpers"
 
 export const HeirachyContainer = memo(() => {
@@ -16,8 +16,8 @@ export const HeirachyContainer = memo(() => {
   const handleClick = (id: string, name: string) => {
     dispatch(actions.setCurrentNode(id))
     dispatch(actions.setCurrentNameNode(name))
-    const node = PutAllSetsOfKeysWithData(
-      ExtractKeysFromDependencies(id, hierarchy),
+    const node = putAllSetsOfKeysWithData(
+      extractKeysFromDependencies(id, hierarchy),
       inventory
     )
     dispatch(actions.setLevelNode(node.level))

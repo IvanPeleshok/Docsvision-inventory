@@ -4,16 +4,14 @@ import {
   IInventory,
   IPlaceResponse,
   IInventoryResponse,
-  IHierarchy,
 } from "../interface/database"
 import { TInferActions, TBaseThunk } from "../types/redux"
 import { AlertifyStatusEnum } from "../types/types"
 import {
-  ExtractKeysFromDependencies,
+  createHierarchyWeb,
+  extractKeysFromDependencies,
   NestingLevel,
-  ParseNodes,
-  ParseTheAnswerToTheHierarchyLastNode,
-  PutAllSetsOfKeysWithData,
+  putAllSetsOfKeysWithData,
 } from "../utils/funcHelpers"
 import { showAlert } from "../utils/showAlert"
 
@@ -119,7 +117,7 @@ export const getHierarchy = (): TThunk => async (dispatch) => {
 
     const response = await databaseAPI.getPlaces()
 
-    const places = response.map((place: IPlaceResponse) => ({
+    const places: Array<IPlace> = response.map((place: IPlaceResponse) => ({
       name: place.data.name,
       id: place.id,
       parts: place.parts === undefined ? [] : place.parts,
@@ -134,33 +132,7 @@ export const getHierarchy = (): TThunk => async (dispatch) => {
     })
     // Search for dependencies on parts
     // Nesting level => 5
-    const hierarchyWithNodes = hierarchy.map((node: IHierarchy) => {
-      const objNode = node?.parts?.map((part: string) => {
-        const node = ParseNodes(places, part)
-        const objNode = node?.parts?.map((part: string) => {
-          const node = ParseNodes(places, part)
-          const objNode = node?.parts?.map((part: string) => {
-            const node = ParseNodes(places, part)
-            const objNode = node?.parts?.map((part: string) => {
-              const node = ParseNodes(places, part)
-              const objNode = node?.parts?.map((part: string) => {
-                const node = ParseNodes(places, part)
-                const objNode = ParseTheAnswerToTheHierarchyLastNode(
-                  node,
-                  places
-                )
-                return { name: node.name, id: node.id, parts: objNode }
-              })
-              return { name: node.name, id: node.id, parts: objNode }
-            })
-            return { name: node.name, id: node.id, parts: objNode }
-          })
-          return { name: node.name, id: node.id, parts: objNode }
-        })
-        return { name: node.name, id: node.id, parts: objNode }
-      })
-      return { name: node.name, id: node.id, parts: objNode }
-    })
+    const hierarchyWithNodes = createHierarchyWeb(hierarchy, places)
 
     dispatch(actions.setHierarchy(hierarchyWithNodes))
 
@@ -190,8 +162,8 @@ export const getInventory = (): TThunk => async (dispatch) => {
 const _updateListCurrentInvetory = (): TThunk => async (dispatch, getState) => {
   await dispatch(getInventory())
 
-  const node = await PutAllSetsOfKeysWithData(
-    ExtractKeysFromDependencies(
+  const node = await putAllSetsOfKeysWithData(
+    extractKeysFromDependencies(
       getState().database.currenNode,
       getState().database.hierarchy
     ),

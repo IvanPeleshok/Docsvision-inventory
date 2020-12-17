@@ -6,7 +6,7 @@ import {
 // updateInventory,
   removeInventory,
 } from "../../../redux/database-reducer"
-import { ExtractKeysFromDependencies } from "../../../utils/funcHelpers"
+import { extractKeysFromDependencies } from "../../../utils/funcHelpers"
 import { List } from "./List"
 
 export const ListContainer = memo(() => {
@@ -15,7 +15,7 @@ export const ListContainer = memo(() => {
   const currenNode = useSelector(databaseSelectors.getCurrentNode)
   const currenName = useSelector(databaseSelectors.getCurrentName)
   const hierarchy = useSelector(databaseSelectors.getHierarchy)
-  const dependency = ExtractKeysFromDependencies(currenNode, hierarchy)
+  const dependency = extractKeysFromDependencies(currenNode, hierarchy)
 
   const [edit, setEdit] = useState(false)
   const [create, setCreate] = useState(false)
