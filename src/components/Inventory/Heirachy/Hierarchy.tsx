@@ -63,7 +63,7 @@ const Nodes = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
 
 const Rooms = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
   return (
-    <ul>
+    <>
       {parts.map((room: any) => (
         <li
           onClick={() => handleClick(room.id)}
@@ -73,6 +73,6 @@ const Rooms = memo<ISubsidiariesProps>(({ parts, handleClick }) => {
           {room.name}
         </li>
       ))}
-    </ul>
+    </>
   )
 })

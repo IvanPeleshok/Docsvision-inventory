@@ -1,11 +1,19 @@
 import { Form, Formik } from "formik"
 import React, { memo } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { databaseSelectors } from "../../../../redux/selectors/selectors"
 import { CustomButton } from "../../../Common/CustomForm/CustomButton"
 import { CustomField } from "../../../Common/CustomForm/CustomField"
 import { validationSchema } from "../List"
+import { createInventory } from "../../../../redux/database-reducer"
 import s from "../List.module.scss"
 
 export const Create = memo(() => {
+  const dispatch = useDispatch()
+
+  // name current node (click)
+  const id = useSelector(databaseSelectors.getCurrentNode)
+
   return (
     <>
       <div className={s.listPage}>
@@ -19,6 +27,8 @@ export const Create = memo(() => {
           enableReinitialize={true}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             setSubmitting(false)
+            dispatch(createInventory(values.name, +values.count, id))
+
             resetForm()
           }}
         >
@@ -30,7 +40,6 @@ export const Create = memo(() => {
                   <CustomField
                     name="name"
                     placeholder="Оборудование"
-                    // className={s.createInput}
                     autoComplete="off"
                     className={s.input}
                   />
@@ -39,7 +48,6 @@ export const Create = memo(() => {
                   <CustomField
                     name="count"
                     placeholder="Количество"
-                    // className={s.createInput}
                     autoComplete="off"
                     className={s.input}
                   />

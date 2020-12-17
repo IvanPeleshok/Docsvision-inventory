@@ -1,9 +1,8 @@
 import firebase from "../firebase/firebase"
-import { IPlace } from "../interface/database"
 import { AlertifyStatusEnum } from "../types/types"
 import { showAlert } from "../utils/showAlert"
 
-export const dataBaseAPI = {
+export const databaseAPI = {
   getPlaces() {
     return firebase
       .firestore()
@@ -29,7 +28,9 @@ export const dataBaseAPI = {
         return response.docs.map((x: any) => ({
           id: x.id,
           data: x.data(),
-          placeId: x.data().place.id,
+          placeId: x.data().place
+            ? x.data().place?.id
+            : "Accidentally created in the database x.data().place === undefined", // my bad
         }))
       })
       .catch(() =>
@@ -39,29 +40,31 @@ export const dataBaseAPI = {
         )
       )
   },
-  addInventory(name: string, count: string, id: string) {
-    return firebase
-      .firestore()
-      .collection("Inventory")
+  createInventory(name: string, count: number, id: string) {
+    let filestore = firebase.firestore()
+    return filestore
+      .collection("inventory")
       .doc()
       .set({
-        name,
-        count,
-        place: firebase.firestore().collection("place").doc(id),
+        name: name,
+        count: count,
+        place: filestore.collection("place").doc(id),
       })
-      .then(() => console.info("Done"))
+      .then(() =>
+        showAlert(AlertifyStatusEnum.success, "Оборудование добавлено")
+      )
       .catch(() => showAlert(AlertifyStatusEnum.error, "Не удалось добавить"))
   },
   deleteInventory(id: string) {
     return firebase
       .filestore()
-      .collection("Inventory")
+      .collection("inventory")
       .doc(id)
       .delete()
       .then(() => (response: any) => response)
       .catch(() => {})
   },
-  updateInventory(id: string, count: string) {
+  updateInventory(id: string, count: number) {
     return firebase
       .firestore()
       .collection("inventory")

@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { databaseSelectors } from "../../../redux/selectors/selectors"
 import { Formik, Form } from "formik"
 import * as yup from "yup"
@@ -8,6 +8,10 @@ import { CustomButton } from "../../Common/CustomForm/CustomButton"
 import { IInventory } from "../../../interface/database"
 import { Create } from "./Create/Create"
 import s from "./List.module.scss"
+import {
+  updateInventory,
+  removeInventory,
+} from "../../../redux/database-reducer"
 
 export interface IInitialValues {
   name: string
@@ -20,16 +24,39 @@ export const validationSchema = yup.object({
     .min(3, "Минимум 3 буквы")
     .max(30, "Максимум 30 букв")
     .required("Введите предмет"),
-  count: yup.number().required("Введите название задачи"),
+  count: yup
+    .number()
+    .typeError("Только цифры")
+    .required("Введите название задачи"),
 })
 
 export const List = memo(() => {
+  const dispatch = useDispatch()
+
   const currentInventory = useSelector(databaseSelectors.getCurrentInventory)
+  const currenNode = useSelector(databaseSelectors.getCurrentNode)
   const [edit, setEdit] = useState(false)
   const [create, setCreate] = useState(false)
 
-  if (!currentInventory.length) {
-    return <div className={s.notFound}>Оборудования не обноруженно</div>
+  if (!currentInventory.length && !currenNode) {
+    return (
+      <>
+        <div className={s.notFound}>Необходимо сделать выбор</div>
+      </>
+    )
+  } else if (!currentInventory.length) {
+    return (
+      <>
+        <div className={s.notFound}>
+          Оборудования не обноруженно в {currenNode}
+        </div>
+        <Create />
+      </>
+    )
+  }
+
+  const handleDelete = (id: string) => {
+    dispatch(removeInventory(id))
   }
 
   return (
@@ -48,6 +75,7 @@ export const List = memo(() => {
             onSubmit={async (values, { setSubmitting, resetForm }) => {
               setSubmitting(false)
               resetForm()
+              dispatch(updateInventory(inventory.id, values.count))
             }}
           >
             {({ isSubmitting }) => {
@@ -56,6 +84,7 @@ export const List = memo(() => {
                   <div className={s.form}>
                     <h3 className={s.titleForObj}>Название оборудования</h3>
                     <CustomField
+                      disabled
                       name="name"
                       placeholder="Имя"
                       className={s.input}
@@ -63,12 +92,22 @@ export const List = memo(() => {
                     />
 
                     <h3 className={s.titleForObj}>Количество</h3>
-                    <CustomField
-                      name="count"
-                      placeholder="Количество"
-                      className={s.input}
-                      autoComplete="off"
-                    />
+                    {edit ? (
+                      <CustomField
+                        name="count"
+                        placeholder="Количество"
+                        className={s.input}
+                        autoComplete="off"
+                      />
+                    ) : (
+                      <CustomField
+                        disabled
+                        name="count"
+                        placeholder="Количество"
+                        className={s.input}
+                        autoComplete="off"
+                      />
+                    )}
 
                     {edit && (
                       <div className={s.forbuttons}>
@@ -79,7 +118,12 @@ export const List = memo(() => {
                           isSubmitting={isSubmitting}
                         ></CustomButton>
 
-                        <button className={s.btn}>Удалить</button>
+                        <button
+                          className={s.btn}
+                          onClick={() => handleDelete(inventory.id)}
+                        >
+                          Удалить
+                        </button>
                       </div>
                     )}
                   </div>

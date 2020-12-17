@@ -68,6 +68,7 @@ export const HeirachyContainer = memo(() => {
   }
 
   const handleClick = (id: string) => {
+    dispatch(actions.setCurrentNode(id))
     const currentInventory = PutAllSetsOfKeysWithData(
       ExtractKeysFromDependencies(id)
     )
