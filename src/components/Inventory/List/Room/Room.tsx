@@ -19,11 +19,6 @@ export const Room = memo<IProps>(
     if (currentInventory.length === 0) {
       return (
         <>
-          <div className={s.notFound}>
-            <p className={s.itemsNotFound}>
-              В выбранном помещении нет оборудования
-            </p>
-          </div>
           <div className={s.forbuttons}>
             <button
               onClick={() => setCreate((prevState: boolean) => !prevState)}

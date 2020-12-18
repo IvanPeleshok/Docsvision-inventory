@@ -57,6 +57,14 @@ export const List = memo<IProps>(
       <>
         <h2 className={s.title}>{currenName}</h2>
 
+        {currentInventory.length === 0 && (
+          <div className={s.notFound}>
+            <p className={s.itemsNotFound}>
+              В выбранном помещении нет оборудования
+            </p>
+          </div>
+        )}
+
         {dependency.keys[0].length === 1 ? (
           <Room
             dependency={dependency}
