@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "029c6c424d3d1fcfcf853244e469c348",
+    "revision": "78ffeaf37b83ed26fcf02c41233daf8c",
     "url": "/docsvision-db-task/index.html"
   },
   {
-    "revision": "1116a1bd69d49c2d730e",
+    "revision": "a84090f7da4a4ac0352a",
     "url": "/docsvision-db-task/static/css/4.f398e870.chunk.css"
   },
   {
@@ -28,16 +28,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/docsvision-db-task/static/js/3.153d494c.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "1116a1bd69d49c2d730e",
-    "url": "/docsvision-db-task/static/js/4.d2e827ad.chunk.js"
+    "revision": "a84090f7da4a4ac0352a",
+    "url": "/docsvision-db-task/static/js/4.503984bc.chunk.js"
   },
   {
     "revision": "0a31853722f1766b50d4",
     "url": "/docsvision-db-task/static/js/main.0d187888.chunk.js"
   },
   {
-    "revision": "a658ae64a063f6e1eb7d",
-    "url": "/docsvision-db-task/static/js/runtime-main.ba4f48d5.js"
+    "revision": "283521699cc4ed4790aa",
+    "url": "/docsvision-db-task/static/js/runtime-main.12cb6fe9.js"
   },
   {
     "revision": "48aa7ad98beedc63d82925f45fd8e72c",
