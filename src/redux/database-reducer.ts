@@ -4,6 +4,7 @@ import {
   IInventory,
   IPlaceResponse,
   IInventoryResponse,
+  IHierarchy,
 } from "../interface/database"
 import { TInferActions, TBaseThunk } from "../types/redux"
 import { AlertifyStatusEnum } from "../types/types"
@@ -20,7 +21,7 @@ type TActions = TInferActions<typeof actions>
 type TThunk = TBaseThunk<TActions>
 
 let initialState = {
-  hierarchy: [] as Array<any>,
+  hierarchy: [] as Array<IHierarchy>,
   inventory: [] as Array<IInventory>,
   currentInventory: [] as Array<IInventory>,
   currenNode: "",
@@ -80,7 +81,7 @@ export const databaseReducer = (
 }
 
 export const actions = {
-  setHierarchy: (hierarchy: Array<any>) =>
+  setHierarchy: (hierarchy: Array<IHierarchy>) =>
     ({
       type: "DATABASE/SET_HEIRARCHY",
       payload: hierarchy,
@@ -123,16 +124,15 @@ export const getHierarchy = (): TThunk => async (dispatch) => {
       parts: place.parts === undefined ? [] : place.parts,
     }))
 
-    let hierarchy: Array<any> = []
+    let hierarchy: Array<IPlace> = []
     // Building search
     places.forEach((place: IPlace) => {
       if (place.id.indexOf("-") === -1) {
         hierarchy.push({ id: place.id, parts: place.parts, name: place.name })
       }
     })
-    // Search for dependencies on parts
-    // Nesting level => 5
-    const hierarchyWithNodes = createHierarchyWeb(hierarchy, places)
+  
+    const hierarchyWithNodes: IHierarchy[] = createHierarchyWeb(hierarchy, places)
 
     dispatch(actions.setHierarchy(hierarchyWithNodes))
 

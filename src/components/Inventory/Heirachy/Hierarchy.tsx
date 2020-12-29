@@ -6,12 +6,9 @@ import {
   extractKeysFromDependencies,
   putAllSetsOfKeysWithData,
 } from "../../../utils/funcHelpers"
-import { IHierarchy, IInventory, IPlace } from "../../../interface/database"
+import { IHierarchy, IInventory } from "../../../interface/database"
 import { Indicator } from "./Indicator/Indicator"
 
-interface INode {
-  parts: any
-}
 
 interface IProps {
   handleClick: (id: string, name: string) => void
@@ -27,26 +24,26 @@ export const Hierarchy = memo<IProps>(({ handleClick }) => {
 
   return (
     <ul className={s.hierachyPage}>
-      {hierarchy.map((building: IHierarchy) => {
+      {hierarchy.map((node: IHierarchy) => {
         const currInv = putAllSetsOfKeysWithData(
-          extractKeysFromDependencies(building.id, hierarchy),
+          extractKeysFromDependencies(node.id, hierarchy),
           inventory
         )
         return (
-          <div key={building.name}>
+          <div key={node.name}>
             <li className={s.building}>
               <div className={s.indicator}>
                 <Indicator indicator={currInv.currentInventory} />
                 <p
-                  onClick={() => handleClick(building.id, building.name)}
+                  onClick={() => handleClick(node.id, node.name)}
                   className={s.title}
                 >
-                  {building.name}
+                  {node.name}
                 </p>
               </div>
               <Nodes
                 handleClick={handleClick}
-                parts={building.parts!}
+                parts={node.parts}
                 hierarchy={hierarchy}
                 inventory={inventory}
               />
@@ -59,9 +56,9 @@ export const Hierarchy = memo<IProps>(({ handleClick }) => {
 })
 
 interface ISubsidiariesProps {
-  parts: any
+  parts: Array<IHierarchy>
   handleClick: (id: string, name: string) => void
-  hierarchy: Array<any>
+  hierarchy: Array<IHierarchy>
   inventory: Array<IInventory>
 }
 
@@ -69,7 +66,7 @@ const Nodes = memo<ISubsidiariesProps>(
   ({ parts, handleClick, hierarchy, inventory }) => {
     return (
       <>
-        {parts.map((node: any) => {
+        {parts.map((node: IHierarchy) => {
           const currInv = putAllSetsOfKeysWithData(
             extractKeysFromDependencies(node.id, hierarchy),
             inventory
@@ -89,7 +86,7 @@ const Nodes = memo<ISubsidiariesProps>(
                 {node.parts && (
                   <Rooms
                     handleClick={handleClick}
-                    parts={node?.parts}
+                    parts={node.parts}
                     hierarchy={hierarchy}
                     inventory={inventory}
                   />
@@ -107,7 +104,7 @@ const Rooms = memo<ISubsidiariesProps>(
   ({ parts, handleClick, hierarchy, inventory }) => {
     return (
       <>
-        {parts?.map((node: any) => {
+        {parts.map((node: IHierarchy) => {
           const currInv = putAllSetsOfKeysWithData(
             extractKeysFromDependencies(node.id, hierarchy),
             inventory
@@ -122,7 +119,7 @@ const Rooms = memo<ISubsidiariesProps>(
               </div>
               <ForTheThirdNesting
                 handleClick={handleClick}
-                parts={node?.parts}
+                parts={node.parts}
                 hierarchy={hierarchy}
                 inventory={inventory}
               />
@@ -139,7 +136,7 @@ const ForTheThirdNesting = memo<ISubsidiariesProps>(
   ({ parts, handleClick, hierarchy, inventory }) => {
     return (
       <>
-        {parts?.map((node: any) => {
+        {parts?.map((node: IHierarchy) => {
           const currInv = putAllSetsOfKeysWithData(
             extractKeysFromDependencies(node.id, hierarchy),
             inventory

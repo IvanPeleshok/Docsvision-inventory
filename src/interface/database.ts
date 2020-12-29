@@ -4,7 +4,7 @@ interface IName {
 
 export interface IPlace extends IName {
   id: string
-  parts: Array<string> | null
+  parts: Array<string>
 }
 
 export interface IPlaceResponse extends IPlace {
@@ -31,6 +31,6 @@ export interface IInventoryResponse extends IInventory {
 
 export interface IHierarchy {
   id: string
-  parts: Array<string> | null
+  parts: Array<IHierarchy>
   name: string
 }

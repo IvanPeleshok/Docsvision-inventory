@@ -29,125 +29,57 @@ export const extractKeysFromDependencies = (
   hierarchy: Array<IHierarchy>
 ) => {
   let nestingLevel = NestingLevel.above
-  let keysForInventory: any = []
-  // Get all dependency id if building was clicked
-  // Zero nesting
-  hierarchy.map((building: IHierarchy) => {
-    if (building.id === id) {
-      const parts = building.parts?.map((node: any) => {
-        const nodes = node.parts?.map((room: any) => room.id)
-        return nodes
-      })
-      keysForInventory.push(
-        [
-          parts?.flat(),
-          ...building.parts!.map((item: any) => item.id),
-          building.id,
-        ].flat()
-      )
-    }
+  let keysForInventory: Array<Array<string>> = []
+
+  hierarchy.forEach((node: IHierarchy) => {
+    extractKeysFromDependenciesRecursion(id, node, keysForInventory)
   })
-
-  // First nesting
-  let nonEmptyArr: number = Object.keys(keysForInventory).length
-  if (!nonEmptyArr) {
-    hierarchy.forEach((node: IHierarchy) => {
-      node.parts?.forEach((node: any) => {
-        if (node.id === id) {
-          const parts = node.parts?.map((node: IHierarchy) => {
-            const nodes = node.parts?.map((room: any) => room.id)
-            return nodes
-          })
-          keysForInventory.push(
-            [
-              parts?.flat(),
-              ...(node.parts?.map((item: IHierarchy) => item.id) ?? []),
-              node.id,
-            ].flat()
-          )
-        }
-      })
-    })
-  }
-
-  // Second nesting
-  nonEmptyArr = Object.keys(keysForInventory).length
-  // Get all dependency ids if a node is clicked
-  nonEmptyArr = Object.keys(keysForInventory).length
-  if (!nonEmptyArr) {
-    hierarchy.forEach((node: IHierarchy) => {
-      node.parts?.forEach((node: any) => {
-        node.parts?.forEach((node: IHierarchy) => {
-          if (node.id === id) {
-            const parts = node.parts?.map((node: any) => {
-              const nodes = node.parts?.map((room: any) => room.id)
-              return nodes
-            })
-            keysForInventory.push(
-              [
-                parts?.flat(),
-                ...(node.parts?.map((item: any) => item.id) ?? []),
-                node.id,
-              ].flat()
-            )
-          }
-        })
-      })
-    })
-  }
-
-  // Third nesting
-  nonEmptyArr = Object.keys(keysForInventory).length
-  // Get all dependency ids if a room is clicked
-  if (!nonEmptyArr) {
-    keysForInventory.push([id])
-    nestingLevel = NestingLevel.room
-  }
 
   return { keys: keysForInventory, level: nestingLevel }
 }
 
-export const parseNodes = (places: Array<IPlace>, part: string): any => {
-  return places.find((place: IPlace) => place.id === part)
-}
-
-export const parseTheAnswerToTheHierarchyLastNode = (
-  node: any,
-  places: Array<IPlace>
+export const extractKeysFromDependenciesRecursion = (
+  id: string,
+  node: IHierarchy,
+  keysForInventory: Array<Array<string>>
 ) => {
-  const objNode = node?.parts?.map((part: string) => {
-    const room = places.find((place: IPlace) => place.id === part)
-    return room
-  })
-  return objNode
+  if (node.id === id) {
+    const parts = node.parts.map((node: IHierarchy) => {
+      const nodes = node.parts.map((room: IHierarchy) => room.id)
+      return nodes
+    })
+    keysForInventory.push(
+      [
+        parts.flat(),
+        ...(node.parts.map((item: IHierarchy) => item.id)),
+        node.id,
+      ].flat()
+    )
+  } else {
+    node.parts.forEach((node: IHierarchy) => {
+      extractKeysFromDependenciesRecursion(id, node, keysForInventory)
+    })
+  }
 }
 
 export const createHierarchyWeb = (
-  hierarchy: Array<any>,
+  hierarchy: Array<IPlace>,
   places: Array<IPlace>
-) => {
-  return hierarchy.map((node: IHierarchy) => {
-    const objNode = node?.parts?.map((part: string) => {
-      const node = parseNodes(places, part)
-      const objNode = node?.parts?.map((part: string) => {
-        const node = parseNodes(places, part)
-        const objNode = node?.parts?.map((part: string) => {
-          const node = parseNodes(places, part)
-          const objNode = node?.parts?.map((part: string) => {
-            const node = parseNodes(places, part)
-            const objNode = node?.parts?.map((part: string) => {
-              const node = parseNodes(places, part)
-              const objNode = parseTheAnswerToTheHierarchyLastNode(node, places)
-              return { name: node.name, id: node.id, parts: objNode }
-            })
-            return { name: node.name, id: node.id, parts: objNode }
-          })
-          return { name: node.name, id: node.id, parts: objNode }
-        })
-        return { name: node.name, id: node.id, parts: objNode }
-      })
-      return { name: node.name, id: node.id, parts: objNode }
-    })
-    return { name: node.name, id: node.id, parts: objNode }
+): Array<IHierarchy> => {
+  return hierarchy.map((node: IPlace) => extractParts(node, places))
+}
+
+export const parseNodes = (
+  places: Array<IPlace>,
+  part: string
+): IPlace | undefined => {
+  return places.find((place: IPlace) => place.id === part)
+}
+
+const extractParts = (node: IPlace, places: Array<IPlace>): IHierarchy => {
+  const objNode = node.parts.map((part: string) => {
+    const node = parseNodes(places, part)
+    return extractParts(node!, places)
   })
+  return { name: node.name, id: node.id, parts: objNode }
 }

@@ -7,9 +7,34 @@ interface IProps {
   isSubmitting: boolean
   id: string
   handleDelete: (id: string) => void
+  edit: boolean
 }
 
-export const Edit = memo<IProps>(({ isSubmitting, handleDelete, id }) => {
+export const Edit = memo<IProps>(({ isSubmitting, handleDelete, id, edit }) => {
+  if (!edit) {
+    return (
+      <>
+        <CustomField
+          disabled
+          name="name"
+          placeholder="Имя"
+          className={s.input}
+          autoComplete="off"
+        />
+
+        <h3 className={s.titleForObj}>Количество</h3>
+
+        <CustomField
+          disabled
+          name="count"
+          placeholder="Количество"
+          className={s.input}
+          autoComplete="off"
+        />
+      </>
+    )
+  }
+
   return (
     <div>
       <CustomField

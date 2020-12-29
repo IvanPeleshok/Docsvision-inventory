@@ -107,33 +107,12 @@ export const List = memo<IProps>(
                     <div className={s.form}>
                       <h3 className={s.titleForObj}>Название оборудования</h3>
 
-                      {edit ? (
-                        <Edit
-                          isSubmitting={isSubmitting}
-                          handleDelete={handleDelete}
-                          id={inventory.id}
-                        />
-                      ) : (
-                        <>
-                          <CustomField
-                            disabled
-                            name="name"
-                            placeholder="Имя"
-                            className={s.input}
-                            autoComplete="off"
-                          />
-
-                          <h3 className={s.titleForObj}>Количество</h3>
-
-                          <CustomField
-                            disabled
-                            name="count"
-                            placeholder="Количество"
-                            className={s.input}
-                            autoComplete="off"
-                          />
-                        </>
-                      )}
+                      <Edit
+                        isSubmitting={isSubmitting}
+                        handleDelete={handleDelete}
+                        id={inventory.id}
+                        edit={edit}
+                      />
                     </div>
                   </Form>
                 )
