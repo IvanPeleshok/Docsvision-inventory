@@ -32,6 +32,15 @@
 + **Редактирование оборудования.** Если выбрана комната, которая не имеет дочерних узлов (не этаж, не
 крыло), то обеспечить возможность добавлять, редактировать и удалять оборудование.
 
+### Пример входных данных: 
+| ![places](https://user-images.githubusercontent.com/70073003/103302424-aac87f80-4a14-11eb-8e07-cf512107cf6b.jpg) | 
+|:--:| 
+| *place* |
+
+| ![inventory](https://user-images.githubusercontent.com/70073003/103302966-e7e14180-4a15-11eb-9f27-d99712130da8.jpg) |
+|:--:| 
+| *inventory* |
+
 
 ### Решение: 
 [Публикация результата в сервисе Github Pages](https://ivanpeleshok.github.io/docsvision-db-task/database)
