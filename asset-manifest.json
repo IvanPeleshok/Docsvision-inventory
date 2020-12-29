@@ -1,30 +1,30 @@
 {
   "files": {
     "main.css": "/docsvision-db-task/static/css/main.65c55435.chunk.css",
-    "main.js": "/docsvision-db-task/static/js/main.0d187888.chunk.js",
-    "main.js.map": "/docsvision-db-task/static/js/main.0d187888.chunk.js.map",
-    "runtime-main.js": "/docsvision-db-task/static/js/runtime-main.12cb6fe9.js",
-    "runtime-main.js.map": "/docsvision-db-task/static/js/runtime-main.12cb6fe9.js.map",
-    "static/js/2.1c40115b.chunk.js": "/docsvision-db-task/static/js/2.1c40115b.chunk.js",
-    "static/js/2.1c40115b.chunk.js.map": "/docsvision-db-task/static/js/2.1c40115b.chunk.js.map",
-    "static/js/3.153d494c.chunk.js": "/docsvision-db-task/static/js/3.153d494c.chunk.js",
-    "static/js/3.153d494c.chunk.js.map": "/docsvision-db-task/static/js/3.153d494c.chunk.js.map",
+    "main.js": "/docsvision-db-task/static/js/main.13507b8b.chunk.js",
+    "main.js.map": "/docsvision-db-task/static/js/main.13507b8b.chunk.js.map",
+    "runtime-main.js": "/docsvision-db-task/static/js/runtime-main.0c24aad6.js",
+    "runtime-main.js.map": "/docsvision-db-task/static/js/runtime-main.0c24aad6.js.map",
+    "static/js/2.97a37f4c.chunk.js": "/docsvision-db-task/static/js/2.97a37f4c.chunk.js",
+    "static/js/2.97a37f4c.chunk.js.map": "/docsvision-db-task/static/js/2.97a37f4c.chunk.js.map",
+    "static/js/3.a455e9cc.chunk.js": "/docsvision-db-task/static/js/3.a455e9cc.chunk.js",
+    "static/js/3.a455e9cc.chunk.js.map": "/docsvision-db-task/static/js/3.a455e9cc.chunk.js.map",
     "static/css/4.f398e870.chunk.css": "/docsvision-db-task/static/css/4.f398e870.chunk.css",
-    "static/js/4.503984bc.chunk.js": "/docsvision-db-task/static/js/4.503984bc.chunk.js",
-    "static/js/4.503984bc.chunk.js.map": "/docsvision-db-task/static/js/4.503984bc.chunk.js.map",
+    "static/js/4.f190d199.chunk.js": "/docsvision-db-task/static/js/4.f190d199.chunk.js",
+    "static/js/4.f190d199.chunk.js.map": "/docsvision-db-task/static/js/4.f190d199.chunk.js.map",
     "index.html": "/docsvision-db-task/index.html",
-    "precache-manifest.e1c6de9b7bfd92e7fc3461853ad18dbe.js": "/docsvision-db-task/precache-manifest.e1c6de9b7bfd92e7fc3461853ad18dbe.js",
+    "precache-manifest.8a30d65b82ef06abfb7ee5a4cea99dd5.js": "/docsvision-db-task/precache-manifest.8a30d65b82ef06abfb7ee5a4cea99dd5.js",
     "service-worker.js": "/docsvision-db-task/service-worker.js",
     "static/css/4.f398e870.chunk.css.map": "/docsvision-db-task/static/css/4.f398e870.chunk.css.map",
     "static/css/main.65c55435.chunk.css.map": "/docsvision-db-task/static/css/main.65c55435.chunk.css.map",
-    "static/js/2.1c40115b.chunk.js.LICENSE.txt": "/docsvision-db-task/static/js/2.1c40115b.chunk.js.LICENSE.txt",
-    "static/js/3.153d494c.chunk.js.LICENSE.txt": "/docsvision-db-task/static/js/3.153d494c.chunk.js.LICENSE.txt",
+    "static/js/2.97a37f4c.chunk.js.LICENSE.txt": "/docsvision-db-task/static/js/2.97a37f4c.chunk.js.LICENSE.txt",
+    "static/js/3.a455e9cc.chunk.js.LICENSE.txt": "/docsvision-db-task/static/js/3.a455e9cc.chunk.js.LICENSE.txt",
     "static/media/App.scss": "/docsvision-db-task/static/media/opensanssemibolditalic.9e4f913f.ttf"
   },
   "entrypoints": [
-    "static/js/runtime-main.12cb6fe9.js",
-    "static/js/2.1c40115b.chunk.js",
+    "static/js/runtime-main.0c24aad6.js",
+    "static/js/2.97a37f4c.chunk.js",
     "static/css/main.65c55435.chunk.css",
-    "static/js/main.0d187888.chunk.js"
+    "static/js/main.13507b8b.chunk.js"
   ]
 }

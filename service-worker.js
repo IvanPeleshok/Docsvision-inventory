@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/docsvision-db-task/precache-manifest.e1c6de9b7bfd92e7fc3461853ad18dbe.js"
+  "/docsvision-db-task/precache-manifest.8a30d65b82ef06abfb7ee5a4cea99dd5.js"
 );
 
 self.addEventListener('message', (event) => {
